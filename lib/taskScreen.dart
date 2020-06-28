@@ -72,7 +72,9 @@ class TaskScreenState extends State<TaskScreen>{
 
         await updateTodos(http.Client(),param);
 
-        Navigator.pop(context);
+        Navigator.pop(context,(){
+          setState(() {});
+        });
      },
    );
    final btnDelete = new RaisedButton(
@@ -81,16 +83,41 @@ class TaskScreenState extends State<TaskScreen>{
      color: Colors.red,
      elevation: 4.0,
      padding: const EdgeInsets.all(10.0),
-     onPressed: () async {
+     onPressed: ()  {
        Map<String, dynamic> param = Map<String, dynamic> ();
        param["id"] = this.task.id;
        param["isDone"] = this.task.isDone;
        param["name"] = this.task.name;
-       await deleteTodos(http.Client(),param);
+       showDialog(
+         context: context,
+         builder: (BuildContext context) {
+           // return object of type Dialog
+           return AlertDialog(
+             title: new Text("Delete todo"),
+             actions: <Widget>[
+               // usually buttons at the bottom of the dialog
+               new FlatButton(
+                 child: new Text("Cancel"),
+                 onPressed: ()  {
+                   Navigator.of(context).pop();
 
-       Navigator.pop(context, (){
-         setState(() {});
-       });
+                 },
+               ),
+               new FlatButton(
+                 child: new Text("OK"),
+                 onPressed: () async {
+                   await deleteTodos(http.Client(),param);
+                   await Navigator.of(context).pop();
+                   Navigator.pop(context, (){
+                     setState(() {});
+                   });
+                 },
+               ),
+             ],
+           );
+         },
+       );
+
      },
    );
    final Colum = new Column(

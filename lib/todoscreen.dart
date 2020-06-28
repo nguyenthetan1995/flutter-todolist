@@ -17,6 +17,47 @@ class TodoScreen extends StatefulWidget{
 
 
 class TodoScreenState extends State<TodoScreen>{
+  Todo todo = new Todo();
+  _showDialog() async {
+    await showDialog<String>(
+      context: context,
+      child: new AlertDialog(
+        contentPadding: const EdgeInsets.all(16.0),
+        content: new Row(
+          children: <Widget>[
+            new Expanded(
+              child: new TextField(
+                autofocus: true,
+                decoration: new InputDecoration(
+                    labelText: 'Todo Name', hintText: 'eg. Learn Flutter'),
+                controller: TextEditingController(text: this.todo.name),
+                onChanged: (text){
+                  this.todo.name = text;
+                },
+              ),
+            ),
+
+          ],
+        ),
+        actions: <Widget>[
+          new FlatButton(
+              child: const Text('CANCEL'),
+              onPressed: () {
+                Navigator.pop(context);
+              }),
+          new FlatButton(
+              child: const Text('OK'),
+              onPressed: () async {
+                Map<String, dynamic> param = Map<String, dynamic> ();
+                param["isDone"]  = false;
+                param["name"] = this.todo.name;
+                await AddTodos(http.Client(),param);
+                Navigator.pop(context);
+              })
+        ],
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     //TODO: implement build
@@ -26,7 +67,9 @@ class TodoScreenState extends State<TodoScreen>{
         actions: <Widget>[
           IconButton(
               icon: Icon(Icons.add),
-              onPressed: () {}
+              onPressed: () {
+                _showDialog();
+              }
           )
         ],
       ),
