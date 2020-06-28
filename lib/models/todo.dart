@@ -67,3 +67,19 @@ Future<dynamic> updateTodos(http.Client client,Map<String, dynamic> param) async
     throw Exception('Error!');
   }
 }
+Future<dynamic> deleteTodos(http.Client client,Map<String, dynamic> param) async {
+  Map<String, dynamic> parambody = Map<String, dynamic> ();
+  final response = await client.put(DELETE_TODOS+param["id"],body:jsonEncode(parambody),headers: {
+    'Content-type': 'application/json',
+    'Accept': 'application/json',
+  });
+  if (response.statusCode == 200) {
+    final responsedata = await jsonEncode(response.body);
+    print(jsonDecode(responsedata));
+    return responsedata;
+
+  }
+  else{
+    throw Exception('Error!');
+  }
+}

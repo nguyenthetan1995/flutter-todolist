@@ -60,8 +60,9 @@ class TaskScreenState extends State<TaskScreen>{
    );
    final Text finished = new Text('Finished', style: TextStyle(fontSize: 16.0));
    final btnSave = new RaisedButton(
-     child: Text('Save'),
+     child: Text('Save', style: TextStyle(color:Colors.white )),
      color: Theme.of(context).accentColor,
+     padding: const EdgeInsets.only(right: 10.0),
      elevation: 4.0,
      onPressed: () async {
        Map<String, dynamic> param = Map<String, dynamic> ();
@@ -75,18 +76,21 @@ class TaskScreenState extends State<TaskScreen>{
      },
    );
    final btnDelete = new RaisedButton(
-     child: Text('Delete'),
+
+     child: Text('Delete', style: TextStyle(color:Colors.white ),),
      color: Colors.red,
      elevation: 4.0,
+     padding: const EdgeInsets.all(10.0),
      onPressed: () async {
        Map<String, dynamic> param = Map<String, dynamic> ();
        param["id"] = this.task.id;
        param["isDone"] = this.task.isDone;
        param["name"] = this.task.name;
+       await deleteTodos(http.Client(),param);
 
-       await updateTodos(http.Client(),param);
-
-       Navigator.pop(context);
+       Navigator.pop(context, (){
+         setState(() {});
+       });
      },
    );
    final Colum = new Column(
@@ -95,7 +99,7 @@ class TaskScreenState extends State<TaskScreen>{
      children: <Widget>[
        txttext,
        Container(
-         padding: EdgeInsets.only(left: 10.0,right: 10.0),
+
          child: Row(
            mainAxisAlignment: MainAxisAlignment.start,
            children: <Widget>[
@@ -107,11 +111,18 @@ class TaskScreenState extends State<TaskScreen>{
        Row(
          children: <Widget>[
            Expanded(
-             child: btnSave,
+             child:  Padding(
+               padding: const EdgeInsets.all(10.0),
+               child: btnSave,
+             )
            ),
            Expanded(
-             child: btnDelete,
-           )
+             child: Padding(
+               padding: const EdgeInsets.all(10.0),
+               child: btnDelete,
+             )
+           ),
+
 
          ],
        )

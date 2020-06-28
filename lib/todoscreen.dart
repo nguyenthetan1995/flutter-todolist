@@ -14,38 +14,7 @@ class TodoScreen extends StatefulWidget{
     return  TodoScreenState();
   }
 }
-class Todolist extends StatelessWidget{
-  final List<Todo> todos;
-  Todolist({Key key, this.todos}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return ListView.builder(
-      itemCount: todos.length,
-      itemBuilder: (context, index){
-        return GestureDetector(
-          child: Container(
-            padding: const EdgeInsets.all(10.0),
-            color: index%2 ==0 ?  Colors.greenAccent : Colors.cyan,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                new Text(todos[index].name, style: new TextStyle(fontWeight: FontWeight.bold,fontSize: 16.0),),
-                new Text(todos[index].isDone.toString(), style: new TextStyle(fontWeight: FontWeight.normal, fontSize: 11.0) )
-              ],
-            )
-          ),
-          onTap: (){
-            Navigator.push(context,
-              new MaterialPageRoute(builder: (context)=> new TaskScreen(todoId: todos[index].id,name:todos[index].name, isDone:todos[index].isDone))
-            );
-          },
-        );
-      }
-    );
-  }
-}
+
 
 class TodoScreenState extends State<TodoScreen>{
   @override
@@ -69,8 +38,32 @@ class TodoScreenState extends State<TodoScreen>{
           }
           if( snapshot.hasData )
           {
-            print(( snapshot.data));
-            return Todolist(todos: snapshot.data);
+            return
+            ListView.builder(
+                itemCount: snapshot.data.length,
+                itemBuilder: (context, index){
+                  return GestureDetector(
+                    child: Container(
+                        padding: const EdgeInsets.all(10.0),
+                        color: index%2 ==0 ?  Colors.white : Colors.blue,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            index%2 ==0 ? new Text(snapshot.data[index].name, style: new TextStyle(fontWeight: FontWeight.bold,fontSize: 16.0),) : new Text(snapshot.data[index].name, style: new TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 16.0),),
+                            index%2 ==0 ? new Text(snapshot.data[index].isDone.toString(), style: new TextStyle(fontWeight: FontWeight.normal, fontSize: 11.0) ) : new Text(snapshot.data[index].isDone.toString(), style: new TextStyle(color: Colors.white,fontWeight: FontWeight.normal, fontSize: 11.0) )
+                          ],
+                        )
+                    ),
+                    onTap: ()async {
+                      await Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context)=> new TaskScreen(todoId: snapshot.data[index].id,name:snapshot.data[index].name, isDone:snapshot.data[index].isDone))
+                      );
+                      setState(() {});
+                    },
+                  );
+                }
+            );
           }
           else{
             return Center(child: CircularProgressIndicator());
